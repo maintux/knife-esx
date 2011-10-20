@@ -6,7 +6,7 @@ This is the unofficial Opscode Knife plugin for ESX. This plugin gives knife the
 
 You'll need an ESX(i)4/5 host with SSH enabled and a privileged user account to connect to it via SSH:
 
-You'll also need a base VM template (a VMDK in fact) with CentOS/Ubuntu/Fedora with vmware-tools installed.
+You'll also need a base VM template (a VMDK in fact) with CentOS/Ubuntu/Fedora and vmware-tools installed.
 
 http://github.com/rubiojr/knife-esx
 

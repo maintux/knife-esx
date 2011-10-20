@@ -56,7 +56,7 @@ Feature: knife esx
 
   @announce
   Scenario:  Success bootstraping VM
-    When I run `knife esx vm create --template-file /home/rubiojr/.chef/bootstrap/ubuntu11.10-gems.erb --vm-disk /home/rubiojr/tmp/ubuntu1110-x64-vmware-tools.vmdk --vm-name knife-esx-test-ubuntu --esx-host esx-test-host --esx-password temporal --datastore datastore1 --no-host-key-verify`
+    When I run `knife esx vm create --template-file /home/rubiojr/.chef/bootstrap/ubuntu11.10-gems.erb --vm-disk /home/rubiojr/tmp/ubuntu1110-x64-vmware-tools.vmdk --vm-name knife-esx-test-ubuntu --esx-host esx-test-host --esx-password temporal --datastore datastore1 --ssh-user ubuntu --ssh-password ubuntu --no-host-key-verify`
     Then the output should contain "Done!"
 
   Scenario: List virtual machine
