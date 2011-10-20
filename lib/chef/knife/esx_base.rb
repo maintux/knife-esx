@@ -1,7 +1,5 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Author:: Sergio Rubio (<rubiojr@frameos.org>)
-# Copyright:: Copyright (c) 2011 Opscode, Inc.
 # Copyright:: Sergio Rubio (c) 2011
 # License:: Apache License, Version 2.0
 #
