@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 
-require 'chef/knife/brightbox_base'
+require 'chef/knife/esx_base'
 
 class Chef
   class Knife
