@@ -167,8 +167,7 @@ class Chef
                              :memory => memory,
                              :guest_id => guest_id
         vm.power_on
-        puts " done \n"
-
+        
         puts "#{ui.color("VM Name", :cyan)}: #{vm.name}"
         puts "#{ui.color("VM Memory", :cyan)}: #{(vm.memory_size.to_f/1024/1024).round} MB"
 
@@ -177,7 +176,10 @@ class Chef
         timeout = 100
         found = connection.virtual_machines.find { |v| v.name == vm.name }
         loop do 
-          break if found.guest_info.vmware_tools_installed?
+          if not vm.ip_address.nil? and not vm.ip_address.empty?
+            puts "\n#{ui.color("VM IP Address: #{vm.ip_address}", :cyan)}"
+            break
+          end
           timeout -= 1
           if timeout == 0
             ui.error "Timeout trying to reach the VM. Does it have vmware-tools installed?"
