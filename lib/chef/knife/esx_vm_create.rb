@@ -111,7 +111,8 @@ class Chef
         :long => "--no-host-key-verify",
         :description => "Disable host key verification",
         :boolean => true,
-        :default => false
+        :default => false,
+        :proc => Proc.new { true }
 
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
