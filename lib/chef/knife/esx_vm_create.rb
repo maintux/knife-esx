@@ -166,7 +166,8 @@ class Chef
                              :datastore => datastore,
                              :disk_file => "#{vm_name}/#{vm_name}.vmdk",
                              :memory => memory,
-                             :guest_id => guest_id
+                             :guest_id => guest_id,
+                             :nics => [{:mac_address => nil, :network => "VM Network"}]
         vm.power_on
         
         puts "#{ui.color("VM Name", :cyan)}: #{vm.name}"
