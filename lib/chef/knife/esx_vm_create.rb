@@ -114,6 +114,18 @@ class Chef
         :default => false,
         :proc => Proc.new { true }
 
+      option :vm_network,
+        :short => "-N network[,network..]",
+        :long => "--vm-network",
+        :description => "Network where nic is attached to",
+        :default => 'VM Network'
+
+      option :mac_address,
+        :short => "-M mac[,mac..]",
+        :long => "--mac-address",
+        :description => "Mac address list",
+        :default => nil
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -152,6 +164,7 @@ class Chef
           exit 1
         end
 
+          
         datastore = config[:datastore]
         memory = config[:memory]
         vm_disk = config[:vm_disk]
@@ -161,13 +174,14 @@ class Chef
         connection.remote_command "mkdir #{destination_path}"
         puts "#{ui.color("Creating VM... ", :magenta)}"
         puts "#{ui.color("Importing VM disk... ", :magenta)}"
+
         connection.import_disk vm_disk, destination_path + "/#{vm_name}.vmdk"
         vm = connection.create_vm :vm_name => vm_name,
                              :datastore => datastore,
                              :disk_file => "#{vm_name}/#{vm_name}.vmdk",
                              :memory => memory,
                              :guest_id => guest_id,
-                             :nics => [{:mac_address => nil, :network => "VM Network"}]
+                             :nics => create_nics(config[:vm_network], config[:mac_address])
         vm.power_on
         
         puts "#{ui.color("VM Name", :cyan)}: #{vm.name}"
@@ -221,6 +235,15 @@ class Chef
         bootstrap
       end
 
+      def create_nics(networks, macs)
+        net_arr = networks.split(/,/).map { |x| { :network => x } }
+        if macs
+          mac_arr = macs.split(/,/)
+          net_arr.each_index { |x| net_arr[x][:mac_address] = mac_arr[x] if mac_arr[x] and !mac_arr[x].empty? }
+        else
+          net_arr
+        end
+      end
     end
   end
 end
