@@ -1,6 +1,6 @@
 # 0.2 - 2012/02/28
 
-* Added *--batch* and *--async* options 
+* **Added --batch and --async options**
 
 Inspired by spiceweasel from Matt Ray (https://github.com/mattray/spiceweasel), I've added a batch mode where a YAML file describes the VMs you want to bootstrap and where (you can deploy to multiple hypervisors).
     
@@ -49,10 +49,12 @@ Standard output and error log is redirected to /tmp/knife_esx_vm_create_VMNAME.l
     /tmp/knife_esx_vm_create_test2.log
     /tmp/knife_esx_vm_create_test3.log
 
-* Added --skip-bootstrap flag. If the flag is used the VM will be created but 
+* **Added --skip-bootstrap flag**
+
+If the flag is used the VM will be created but 
   the bootstrap template/script won't be executed (it also means that Chef won't be installed).
 
-* Fixed bug preventing knife-esx to create a VM when the hypervisor has an empty root password.
+* **Fixed bug preventing knife-esx to create a VM when the hypervisor has an empty root password.**
 
 KNOWN ISSUES
 
