@@ -61,7 +61,7 @@ class Chef
           ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
                                           Chef::Config[:knife][:esx_username],
-                                          Chef::Config[:knife][:esx_password])
+                                          Chef::Config[:knife][:esx_password] || '')
         else
           @connection
         end

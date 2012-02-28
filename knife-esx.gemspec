@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.add_dependency "esx", ">= 0.3.2"
   s.add_dependency "terminal-table"
   s.add_dependency "chef", ">= 0.10"
+  s.add_dependency "celluloid", ">= 0.9"
+  s.add_dependency "open4"
   s.require_paths = ["lib"]
 
 end
