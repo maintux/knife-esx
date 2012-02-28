@@ -43,7 +43,7 @@ If you want to bootstrap the VMs asynchronously, use the --async flag.
 
     knife esx vm create --batch batch.yml --async
 
-Standard output and error log is redirected to /tmp/knife_esx_vm_create_VMNAME.log, so if we use the deploy script from above, three log files will be created:
+When using batch mode, standard output and error is redirected to /tmp/knife_esx_vm_create_VMNAME.log, so if we use the deploy script from above, three log files will be created:
 
     /tmp/knife_esx_vm_create_test1.log
     /tmp/knife_esx_vm_create_test2.log
