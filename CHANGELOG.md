@@ -62,7 +62,7 @@ If the flag is used the VM will be created but
 
 # 0.1.5 - 2012/02/25
 
-* Patch from @pperezrubio adding multiple networks support
+* **Patch from @pperezrubio adding multiple networks and fixed MAC address support**
 
     knife esx vm create --vm-disk ubuntu-oneiric.vmdk \
                         --vm-name testvm --datastore datastore1 \
