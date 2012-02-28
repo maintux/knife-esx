@@ -56,7 +56,7 @@ If the flag is used the VM will be created but
 
 * **Fixed bug preventing knife-esx to create a VM when the hypervisor has an empty root password.**
 
-KNOWN ISSUES
+**KNOWN ISSUES**
 
 * To use --batch without --skip-bootstrap, the ssh user (--ssh-user) needs to be able to sudo without asking for a password (i.e. adding something like 'ubuntu ALL=(ALL) NOPASSWD: ALL' to /etc/sudoers in the appliance template) otherwise the bootstraping process won't work if more than one VM is being deployed. 
 
