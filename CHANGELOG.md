@@ -1,3 +1,7 @@
+# 0.2.1 - 2012/02/28
+
+* Fixed namespaces
+
 # 0.2 - 2012/02/28
 
 * **Added --batch and --async options**
