@@ -2,50 +2,61 @@
 
 * Added template commands
 
+```
     knife esx template import --esx-password password \
                             --esx-host esx-test-host \
                             /path/to/template.vmdk
-    
+                            
     knife esx template list --esx-password password \
                             --esx-host esx-test-host 
 
     knife esx template delete --esx-password password \
                               --esx-host esx-test-host \
                               template.vmdk
+```
 
 * Added --use-template argument to *vm create* command
 
+```
     knife esx vm create --esx-password password \
                         --esx-host esx-test-host \
                         --use-template template.vmdk \
                         my-new-vm
-    
+```
+
 ## Create a new VM using templates
 
 1. Import the template first with "knife esx template import"
 
+```
     knife esx template import --esx-host esx-test-host \
                               --esx-password password \
                               /path/to/template.vmdk
+```
 
 2. Deploy using knife esx vm create
 
+```
     knife esx vm create --esx-host esx-test-host \
                         --esx-password password \
                         --vm-name my-foo-vm \
                         --use-template template.vmdk
+```
 
 ## Using templates with async batch deploys
 
 1. Import the template first with "knife esx template import"
 
+```
     knife esx template import --esx-host esx-test-host \
                               --esx-password password \
                               /path/to/template.vmdk
+```
 
 2. Deploy using knife esx vm create --async --batch
    Sample batch config for "knife esx vm create":
 
+```
     ---
     :tc01:
       'use-template': template.vmdk
@@ -65,6 +76,7 @@
       'ssh-user': ubuntu
       'ssh-password': ubuntu
       'datastore': datastore1
+```
 
 # 0.2.1 - 2012/02/28
 
