@@ -20,11 +20,11 @@ require 'chef/knife/esx_base'
 
 class Chef
   class Knife
-    class EsxVmDelete < Knife
+    class EsxTemplateDelete < Knife
 
       include Knife::ESXBase
 
-      banner "knife esx vm delete VM_NAME [VM_NAME] (options)"
+      banner "knife esx template delete TEMPLATE_NAME [TEMPLATE_NAME] (options)"
 
       option :force_delete,
         :long => "--force-delete NO",
@@ -33,22 +33,20 @@ class Chef
 
       def run
         deleted = []
-        connection.virtual_machines.each do |vm|
-          @name_args.each do |vm_name|
-            if vm_name == vm.name
-              if config[:force_delete] =~ /(no|NO|false|FALSE)/
-                confirm("Do you really want to delete this virtual machine '#{vm.name}'")
+        connection.list_templates.each do |tmpl|
+          @name_args.each do |tmpl_name|
+            if tmpl_name == File.basename(tmpl)
+              if config[:force_delete] !~ /true|yes/i
+                confirm("Do you really want to delete this template '#{tmpl_name}'")
               end
-
-              vm.power_off if (vm.name =~ /#{vm.name}/ and vm.power_state == 'poweredOn')
-              vm.destroy
-              deleted << vm_name
-              ui.info("Deleted virtual machine #{vm.name}")
+              connection.delete_template tmpl_name
+              deleted << tmpl_name
+              ui.info("Deleted virtual machine #{tmpl_name}")
             end
           end
         end
-        @name_args.each do |vm_name|
-          ui.warn "Virtual Machine #{vm_name} not found" if not deleted.include?(vm_name)
+        @name_args.each do |tmpl_name|
+          ui.warn "Template #{tmpl_name} not found" if not deleted.include?(tmpl_name)
         end
       end
 

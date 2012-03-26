@@ -197,6 +197,11 @@ class Chef
         :proc => Proc.new { |t| Chef::Config[:knife][:template_file] = t },
         :default => false
 
+      option :use_template,
+        :long => "--use-template NAME",
+        :description => "Try to use an existing template instead of importing disk",
+        :default => nil
+      
       option :run_list,
         :short => "-r RUN_LIST",
         :long => "--run-list RUN_LIST",
@@ -312,14 +317,16 @@ class Chef
           return
         end
 
-        unless config[:vm_disk]
-          ui.error("You have not provided a valid VMDK file. (--vm-disk)")
-          exit 1
-        end
-        
-        if not File.exist?(config[:vm_disk])
-          ui.error("Invalid VMDK disk file (--vm-disk)")
-          exit 1
+        if not config[:use_template]
+          unless config[:vm_disk]
+            ui.error("You have not provided a valid VMDK file. (--vm-disk)")
+            exit 1
+          end
+          
+          unless File.exist?(config[:vm_disk])
+            ui.error("Invalid VMDK disk file (--vm-disk)")
+            exit 1
+          end
         end
         
         vm_name = config[:vm_name]
@@ -336,10 +343,21 @@ class Chef
         destination_path = "/vmfs/volumes/#{datastore}/#{vm_name}"
 
         connection.remote_command "mkdir #{destination_path}"
-        puts "#{ui.color("Creating VM #{vm_name}... ", :magenta)}"
-        puts "#{ui.color("Importing VM disk... ", :magenta)}"
+        ui.info "Creating VM #{vm_name}"
 
-        connection.import_disk vm_disk, destination_path + "/#{vm_name}.vmdk"
+        if config[:use_template]
+          ui.info "Using template #{config[:use_template]}"
+          if connection.template_exist?(config[:use_template])
+            puts "#{ui.color("Cloning template...",:magenta)}"
+            connection.copy_from_template config[:use_template], destination_path + "/#{vm_name}.vmdk"
+          else
+            ui.error "Template #{config[:use_template]} not found"
+            exit 1
+          end
+        else
+          puts "#{ui.color("Importing VM disk... ", :magenta)}"
+          connection.import_disk vm_disk, destination_path + "/#{vm_name}.vmdk"
+        end
         vm = connection.create_vm :vm_name => vm_name,
                              :datastore => datastore,
                              :disk_file => "#{vm_name}/#{vm_name}.vmdk",
@@ -348,6 +366,7 @@ class Chef
                              :nics => create_nics(config[:vm_network], config[:mac_address])
         vm.power_on
         
+        puts "#{ui.color("VM Created", :cyan)}"
         puts "#{ui.color("VM Name", :cyan)}: #{vm.name}"
         puts "#{ui.color("VM Memory", :cyan)}: #{(vm.memory_size.to_f/1024/1024).round} MB"
         
