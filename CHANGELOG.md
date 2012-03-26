@@ -1,3 +1,7 @@
+# 0.3.1 - 2012/03/26
+
+* Minor string change
+
 # 0.3.0 - 2012/03/26
 
 * Added template commands

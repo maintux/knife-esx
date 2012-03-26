@@ -41,7 +41,7 @@ class Chef
               end
               connection.delete_template tmpl_name
               deleted << tmpl_name
-              ui.info("Deleted virtual machine #{tmpl_name}")
+              ui.info("Deleted template #{tmpl_name}")
             end
           end
         end
