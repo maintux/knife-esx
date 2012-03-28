@@ -1,3 +1,7 @@
+# 0.3.2 - 2012/03/28
+
+* --vm-disk no longer mandatory. Fixes --batch mode.
+
 # 0.3.1 - 2012/03/26
 
 * Minor string change
