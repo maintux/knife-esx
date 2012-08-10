@@ -153,8 +153,12 @@ class Chef
 
       option :vm_name,
         :long => "--vm-name NAME",
-        :description => "The Virtual Machine name"
-      
+        :description => "The Virtual Machine name"    
+
+      option :cpus,
+        :long => "--vm-cpus CPUS",
+        :description => "The Virtual Machine cpus (default: 1)"
+
       option :datastore,
         :long => "--datastore NAME",
         :default => 'datastore1',
@@ -338,6 +342,7 @@ class Chef
           
         datastore = config[:datastore]
         memory = config[:memory]
+        cpus = config[:cpus]||1
         vm_disk = config[:vm_disk]
         guest_id =config[:guest_id]
         destination_path = "/vmfs/volumes/#{datastore}/#{vm_name}"
@@ -362,6 +367,7 @@ class Chef
                              :datastore => datastore,
                              :disk_file => "#{vm_name}/#{vm_name}.vmdk",
                              :memory => memory,
+                             :cpus => cpus,
                              :guest_id => guest_id,
                              :nics => create_nics(config[:vm_network], config[:mac_address])
         vm.power_on
