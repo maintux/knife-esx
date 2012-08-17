@@ -213,6 +213,13 @@ class Chef
         :proc => lambda { |o| o.split(/[\s,]+/) },
         :default => []
 
+      option :json_attributes,
+        :short => "-j JSON_ATTRIBUTES",
+        :long => "--json-attributes JSON_ATTRIBUTES",
+        :description => "A JSON string to be added to the first run of chef-client",
+        :proc => lambda { |o| JSON.parse(o) },
+        :default => {}
+
       option :ssh_user,
         :short => "-x USERNAME",
         :long => "--ssh-user USERNAME",
@@ -413,6 +420,7 @@ class Chef
         bootstrap.name_args = [vm.ip_address]
         bootstrap.config[:async] = config[:async]
         bootstrap.config[:run_list] = config[:run_list]
+        bootstrap.config[:json_attributes] = config[:json_attributes]
         bootstrap.config[:ssh_user] = config[:ssh_user] 
         bootstrap.config[:identity_file] = config[:identity_file]
         bootstrap.config[:chef_node_name] = config[:chef_node_name] || vm.name
