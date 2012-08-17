@@ -43,6 +43,9 @@ class Chef
               vm.power_off if (vm.name =~ /#{vm.name}/ and vm.power_state == 'poweredOn')
               vm.destroy
               deleted << vm_name
+              #Assume yes because the user already confirmed the deletion
+              system "knife client delete #{vm.name} -y"
+              system "knife node delete #{vm.name} -y"
               ui.info("Deleted virtual machine #{vm.name}")
             end
           end
