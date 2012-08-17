@@ -420,7 +420,7 @@ class Chef
         bootstrap.name_args = [vm.ip_address]
         bootstrap.config[:async] = config[:async]
         bootstrap.config[:run_list] = config[:run_list]
-        bootstrap.config[:json_attributes] = config[:json_attributes]
+        bootstrap.config[:first_boot_attributes] = config[:json_attributes]
         bootstrap.config[:ssh_user] = config[:ssh_user] 
         bootstrap.config[:identity_file] = config[:identity_file]
         bootstrap.config[:chef_node_name] = config[:chef_node_name] || vm.name
