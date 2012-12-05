@@ -52,6 +52,12 @@ class Chef
             :description => "Your ESX host address",
             :default => "127.0.0.1",
             :proc => Proc.new { |host| Chef::Config[:knife][:esx_host] = host }
+
+					option :esx_templates_dir,
+						:long => "--esx-templates-dir TEMPLATES_DIRECTORY",
+						:description => "Your ESX Templates directory",
+						:default => "",
+						:proc => Proc.new { |templates_dir| Chef::Config[:knife][:esx_templates_dir] = templates_dir }
         end
       end
 
@@ -61,7 +67,8 @@ class Chef
           ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
                                           Chef::Config[:knife][:esx_username],
-                                          Chef::Config[:knife][:esx_password] || '')
+                                          Chef::Config[:knife][:esx_password] || '',
+																					Chef::Config[:knife][:esx_templates_dir] || '')
         else
           @connection
         end
