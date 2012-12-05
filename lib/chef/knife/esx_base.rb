@@ -53,11 +53,11 @@ class Chef
             :default => "127.0.0.1",
             :proc => Proc.new { |host| Chef::Config[:knife][:esx_host] = host }
 
-					option :esx_templates_dir,
-						:long => "--esx-templates-dir TEMPLATES_DIRECTORY",
-						:description => "Your ESX Templates directory",
-						:default => "",
-						:proc => Proc.new { |templates_dir| Chef::Config[:knife][:esx_templates_dir] = templates_dir }
+          option :esx_templates_dir,
+            :long => "--esx-templates-dir TEMPLATES_DIRECTORY",
+            :description => "Your ESX Templates directory",
+            :default => "",
+            :proc => Proc.new { |templates_dir| Chef::Config[:knife][:esx_templates_dir] = templates_dir }
         end
       end
 
