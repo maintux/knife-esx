@@ -40,16 +40,13 @@ You also have the option of passing your ESX Host/Username/Password into the ind
                         --esx-host my-test-host \
                         --esx-password secret
 
-		#provision a new ubuntu 12.04 VM using a template on the ESXi Host with the --use-template option
-
-		 - the command assumes that you have an ubuntu template located at /vmfs/volumes/datastore2/ubuntu12.04-template-x64/ubuntu12.04-template-x64.vmdk. In this example we also changed the location of the datastore from the default datastore1 to datastore2
-
-			knife esx vm create --esx-username root \
-			--vm-name ubuntu-12.04-vm \
-				                --datastore datastore2 \
-				                --esx-host server1 \
-				                --esx-password secret \
-												--use-template ubuntu12.04-template-x64.vmdk
+    #provision a new ubuntu 12.04 VM using a template on the ESXi Host with the --use-template option - the command assumes that you have an ubuntu template located at /vmfs/volumes/datastore2/ubuntu12.04-template-x64/ubuntu12.04-template-x64.vmdk. In this example we also changed the location of the datastore from the default datastore1 to datastore2
+    knife esx vm create --esx-username root \
+                        --vm-name ubuntu-12.04-vm \
+                        --datastore datastore2 \
+                        --esx-host server1 \
+                        --esx-password secret \
+                        --use-template ubuntu12.04-template-x64.vmdk
 
 = SUBCOMMANDS:
 
