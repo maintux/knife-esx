@@ -68,7 +68,7 @@ class Chef
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
                                           Chef::Config[:knife][:esx_username],
                                           Chef::Config[:knife][:esx_password] || '',
-                                          :templates_dir => Chef::Config[:knife][:esx_templates_dir] || '')
+                                          true, :templates_dir => Chef::Config[:knife][:esx_templates_dir] || '')
         else
           @connection
         end
