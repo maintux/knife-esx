@@ -52,6 +52,18 @@ class Chef
             :description => "Your ESX host address",
             :default => "127.0.0.1",
             :proc => Proc.new { |host| Chef::Config[:knife][:esx_host] = host }
+            
+          option :free_license,
+            :long => "--free-license",
+            :description => "If your Hypervisor have a free license",
+            :boolean => true,
+            :default => false
+            
+          option :insecure,
+            :long => "--insecure",
+            :description => "Insecure connection",
+            :boolean => true,
+            :default => true
         end
       end
 
@@ -61,7 +73,9 @@ class Chef
           ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
                                           Chef::Config[:knife][:esx_username],
-                                          Chef::Config[:knife][:esx_password] || '')
+                                          Chef::Config[:knife][:esx_password] || '',
+                                          config[:insecure],
+                                          {:free_license=>config[:free_license]})
         else
           @connection
         end
