@@ -64,6 +64,12 @@ class Chef
             :description => "Insecure connection",
             :boolean => true,
             :default => true
+
+          option :esx_templates_dir,
+            :long => "--esx-templates-dir TEMPLATES_DIRECTORY",
+            :description => "Your ESX Templates directory",
+            :default => "",
+            :proc => Proc.new { |templates_dir| Chef::Config[:knife][:esx_templates_dir] = templates_dir }
         end
       end
 
@@ -75,7 +81,7 @@ class Chef
                                           Chef::Config[:knife][:esx_username],
                                           Chef::Config[:knife][:esx_password] || '',
                                           config[:insecure],
-                                          {:free_license=>config[:free_license]})
+                                          {:templates_dir => (Chef::Config[:knife][:esx_templates_dir] || ''), :free_license=>config[:free_license]})
         else
           @connection
         end
