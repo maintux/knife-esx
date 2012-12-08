@@ -81,7 +81,7 @@ class Chef
                                           Chef::Config[:knife][:esx_username],
                                           Chef::Config[:knife][:esx_password] || '',
                                           config[:insecure],
-                                          {:templates_dir => (Chef::Config[:knife][:esx_templates_dir] || ''), :free_license=>config[:free_license]})
+                                          {:templates_dir => Chef::Config[:knife][:esx_templates_dir], :free_license=>config[:free_license]})
         else
           @connection
         end
