@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.version     = Knife::ESX::VERSION
   s.has_rdoc = true
   s.authors     = ["Sergio Rubio", "Massimo Maino"]
-  s.email       = ["rubiojr@frameos.org","rubiojr@frameos.org","maintux@gmail.com"]
-  s.homepage = "http://github.com/rubiojr/knife-esx"
+  s.email       = ["maintux@gmail.com"]
+  s.homepage = "http://github.com/maintux/knife-esx"
   s.summary = "ESX Support for Chef's Knife Command"
   s.description = s.summary
   s.extra_rdoc_files = ["README.rdoc", "LICENSE" ]

@@ -10,9 +10,9 @@ Added template commands
     knife esx template import --esx-password password \
                             --esx-host esx-test-host \
                             /path/to/template.vmdk
-                            
+
     knife esx template list --esx-password password \
-                            --esx-host esx-test-host 
+                            --esx-host esx-test-host
 
     knife esx template delete --esx-password password \
                               --esx-host esx-test-host \
@@ -64,7 +64,7 @@ Sample batch config for "knife esx vm create":
     ---
     :tc01:
       'use-template': template.vmdk
-      'extra-args': --no-host-key-verify 
+      'extra-args': --no-host-key-verify
       'vm-memory': 128
       'esx-host': esx-test-host
       'esx-password': password
@@ -73,7 +73,7 @@ Sample batch config for "knife esx vm create":
       'datastore': datastore1
     :tc02:
       'use-template': template.vmdk
-      'extra-args': --no-host-key-verify 
+      'extra-args': --no-host-key-verify
       'vm-memory': 128
       'esx-host': esx-test-host
       'esx-password': password
@@ -91,8 +91,8 @@ Sample batch config for "knife esx vm create":
 * **Added --batch and --async options**
 
 Inspired by spiceweasel from Matt Ray (https://github.com/mattray/spiceweasel), I've added a batch mode where a YAML file describes the VMs you want to bootstrap and where (you can deploy to multiple hypervisors).
-    
-    knife esx vm create --batch batch.yml 
+
+    knife esx vm create --batch batch.yml
 
 Sample batch.yml file:
 
@@ -100,29 +100,29 @@ Sample batch.yml file:
     :test1:
       'extra-args': --no-host-key-verify
       'vm-memory': 128
-      'esx-host': esx-server-1 
-      'esx-password': secret 
+      'esx-host': esx-server-1
+      'esx-password': secret
       'ssh-user': ubuntu
       'ssh-password': ubuntu
-      'vm-disk': /home/rubiojr/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
+      'vm-disk': /home/maintux/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
       'datastore': datastore2
     :test2:
-      'extra-args': --no-host-key-verify 
+      'extra-args': --no-host-key-verify
       'vm-memory': 128
-      'esx-host': esx-server-1 
+      'esx-host': esx-server-1
       'esx-password': secret
       'ssh-user': ubuntu
       'ssh-password': ubuntu
-      'vm-disk': /home/rubiojr/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
+      'vm-disk': /home/maintux/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
       'datastore': datastore2
     :test3:
-      'extra-args': --no-host-key-verify 
+      'extra-args': --no-host-key-verify
       'vm-memory': 256
-      'esx-host': esx-server-1 
+      'esx-host': esx-server-1
       'esx-password': secret
       'ssh-user': ubuntu
       'ssh-password': ubuntu
-      'vm-disk': /home/rubiojr/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
+      'vm-disk': /home/maintux/mnt/mirror/virtual_appliances/ubuntu1110-x64-vmware-tools.vmdk
       'datastore': datastore2
 
 This will try to create three VMs (testvm1, testvm2 and testvm3) sequentially. VM definitions inside the batch file accept all the parameters that can be used with knife-esx.
@@ -139,14 +139,14 @@ When using batch mode, standard output and error is redirected to /tmp/knife_esx
 
 * **Added --skip-bootstrap flag**
 
-If the flag is used the VM will be created but 
+If the flag is used the VM will be created but
   the bootstrap template/script won't be executed (it also means that Chef won't be installed).
 
 * **Fixed bug preventing knife-esx to create a VM when the hypervisor has an empty root password.**
 
 **KNOWN ISSUES**
 
-* To use --batch without --skip-bootstrap, the ssh user (--ssh-user) needs to be able to sudo without asking for a password (i.e. adding something like 'ubuntu ALL=(ALL) NOPASSWD: ALL' to /etc/sudoers in the appliance template) otherwise the bootstraping process won't work if more than one VM is being deployed. 
+* To use --batch without --skip-bootstrap, the ssh user (--ssh-user) needs to be able to sudo without asking for a password (i.e. adding something like 'ubuntu ALL=(ALL) NOPASSWD: ALL' to /etc/sudoers in the appliance template) otherwise the bootstraping process won't work if more than one VM is being deployed.
 
 # 0.1.5 - 2012/02/25
 
@@ -161,7 +161,7 @@ If the flag is used the VM will be created but
 This will create a VM with two NICs, attaching them to the VLAN-Integration and VLAN-Test networks respectively.
 
 Fixed MAC addresses can also be assigned to each NIC using the --mac-address parameter:
-    
+
     knife esx vm create --vm-disk ubuntu-oneiric.vmdk \
                         --vm-name testvm --datastore datastore1 \
                         --esx-host 192.168.88.1 --ssh-user ubuntu \
@@ -172,7 +172,7 @@ Fixed MAC addresses can also be assigned to each NIC using the --mac-address par
 MAC address 00:01:02:03:04:05 will be assigned to VLAN-Integration NIC and 00:01:02:03:04:06 to the VLAN-Test NIC.
 
 If a MAC address is omitted it will be dynamically generated:
-    
+
 knife esx vm create --vm-disk ubuntu-oneiric.vmdk \
                         --vm-name testvm --datastore datastore1 \
                         --esx-host 192.168.88.1 --ssh-user ubuntu \

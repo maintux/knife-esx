@@ -8,7 +8,7 @@ You'll need an ESX(i)4/5 host with SSH enabled and a privileged user account to 
 
 You'll also need a base VM template (a VMDK in fact) with CentOS/Ubuntu/Fedora and vmware-tools installed.
 
-http://github.com/rubiojr/knife-esx
+http://github.com/maintux/knife-esx
 
 = INSTALLATION:
 
@@ -40,8 +40,8 @@ You also have the option of passing your ESX Host/Username/Password into the ind
                         --esx-host my-test-host \
                         --esx-password secret
 
-    #provision a new ubuntu 12.04 VM using a template on the ESXi Host with the --use-template option 
-    #- the command assumes that you have an ubuntu template located at /vmfs/volumes/datastore1/esx-gem/templates/ubuntu12.04-template-x64.vmdk. 
+    #provision a new ubuntu 12.04 VM using a template on the ESXi Host with the --use-template option
+    #- the command assumes that you have an ubuntu template located at /vmfs/volumes/datastore1/esx-gem/templates/ubuntu12.04-template-x64.vmdk.
     #In this example we also changed the location of the datastore from the default datastore1 to datastore2
     knife esx vm create --esx-username root \
                         --vm-name ubuntu-12.04-vm \
@@ -68,8 +68,8 @@ Outputs a list of all virtual machines in the currently configured ESX host.  Pl
 
 = LICENSE:
 
-Author:: Sergio Rubio (<rubiojr@frameos.org>)
-Copyright:: Copyright (c) 2011 Sergio Rubio
+Author:: Sergio Rubio, Massimo Maino (<maintux@gmail.com>)
+Copyright:: Copyright (c) 2011 Sergio Rubio, Massimo Maino
 License:: Apache License, Version 2.0
 
 Licensed under the Apache License, Version 2.0 (the "License");

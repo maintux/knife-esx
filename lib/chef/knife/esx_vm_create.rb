@@ -1,6 +1,6 @@
 #
-# Author:: Sergio Rubio (<rubiojr@frameos.org>)
-# Copyright:: Copyright (c) 2011, Sergio Rubio
+# Author:: Sergio Rubio, Massimo Maino (<maintux@gmail.com>)
+# Copyright:: Sergio Rubio, Massimo Maino (c) 2011
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,18 +31,18 @@ module KnifeESX
     #---
     #:test1:
     #  'vm-memory':
-    #  'extra-args': 
+    #  'extra-args':
     #  'esx-host':
-    #  'template-file': 
-    #  'vm-disk': 
+    #  'template-file':
+    #  'vm-disk':
     #  'ssh-user':
-    #  'ssh-password': 
-    #  'run-list': 
-    #  'network-interface': 
+    #  'ssh-password':
+    #  'run-list':
+    #  'network-interface':
     def initialize(batch_file)
       @batch_file = batch_file
       @jobs = []
-      @job_count = 0 
+      @job_count = 0
       (YAML.load_file batch_file).each do |i|
         @jobs << DeployJob.new(i)
         @job_count += 1
@@ -123,7 +123,7 @@ module KnifeESX
           KnifeESX::CLogger.instance.error! "[#{@name}] #{l.chomp}"
         end
       end
-      return @status, @out, @err 
+      return @status, @out, @err
     end
 
   end
@@ -153,7 +153,7 @@ class Chef
 
       option :vm_name,
         :long => "--vm-name NAME",
-        :description => "The Virtual Machine name"    
+        :description => "The Virtual Machine name"
 
       option :cpus,
         :long => "--vm-cpus CPUS",
@@ -163,7 +163,7 @@ class Chef
         :long => "--datastore NAME",
         :default => 'datastore1',
         :description => "The Datastore to use for the VM files (default: datastore1)"
-      
+
       option :guest_id,
         :long => "--guest-id NAME",
         :default => "otherGuest",
@@ -205,7 +205,7 @@ class Chef
         :long => "--use-template NAME",
         :description => "Try to use an existing template instead of importing disk",
         :default => nil
-      
+
       option :run_list,
         :short => "-r RUN_LIST",
         :long => "--run-list RUN_LIST",
@@ -225,7 +225,7 @@ class Chef
         :long => "--ssh-user USERNAME",
         :description => "The ssh username; default is 'root'",
         :default => "root"
-      
+
       option :ssh_password,
         :short => "-P PASSWORD",
         :long => "--ssh-password PASSWORD",
@@ -235,7 +235,7 @@ class Chef
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
         :description => "The SSH identity file used for authentication"
-      
+
       option :no_host_key_verify,
         :long => "--no-host-key-verify",
         :description => "Disable host key verification",
@@ -254,26 +254,26 @@ class Chef
         :long => "--mac-address",
         :description => "Mac address list",
         :default => nil
-      
+
       option :skip_bootstrap,
         :long => "--skip-bootstrap",
         :description => "Skip bootstrap process (Deploy only mode)",
         :boolean => true,
         :default => false,
         :proc => Proc.new { true }
-      
+
       option :async,
         :long => "--async",
         :description => "Deploy the VMs asynchronously (Ignored unless combined with --batch)",
         :boolean => true,
         :default => false,
         :proc => Proc.new { true }
-      
+
       option :batch,
         :long => "--batch script.yml",
         :description => "Use a batch file to deploy multiple VMs",
         :default => nil
-      
+
       def tcp_test_ssh(hostname)
         tcp_socket = TCPSocket.new(hostname, 22)
         readable = IO.select([tcp_socket], nil, nil, 5)
@@ -295,7 +295,7 @@ class Chef
 
       def run
         $stdout.sync = true
-        
+
         if config[:batch]
           KnifeESX::CLogger.instance.info "Running in batch mode. Extra arguments will be ignored."
           if not config[:async]
@@ -304,7 +304,7 @@ class Chef
             script.each_job do |job|
               counter += 1
               status, stdout, stderr = job.run
-              if status == 0 
+              if status == 0
                 KnifeESX::CLogger.instance.info 'Ok'
               else
                 KnifeESX::CLogger.instance.error 'Failed'
@@ -333,20 +333,20 @@ class Chef
             ui.error("You have not provided a valid VMDK file. (--vm-disk)")
             exit 1
           end
-          
+
           unless File.exist?(config[:vm_disk])
             ui.error("Invalid VMDK disk file (--vm-disk)")
             exit 1
           end
         end
-        
+
         vm_name = config[:vm_name]
         if not vm_name
           ui.error("Invalid Virtual Machine name (--vm-name)")
           exit 1
         end
 
-          
+
         datastore = config[:datastore]
         memory = config[:memory]
         cpus = config[:cpus]||1
@@ -378,18 +378,18 @@ class Chef
                              :guest_id => guest_id,
                              :nics => create_nics(config[:vm_network], config[:mac_address])
         vm.power_on
-        
+
         puts "#{ui.color("VM Created", :cyan)}"
         puts "#{ui.color("VM Name", :cyan)}: #{vm.name}"
         puts "#{ui.color("VM Memory", :cyan)}: #{(vm.memory_size.to_f/1024/1024).round} MB"
-        
+
         return if config[:skip_bootstrap]
 
         # wait for it to be ready to do stuff
         print "\n#{ui.color("Waiting server... ", :magenta)}"
         timeout = 100
         found = connection.virtual_machines.find { |v| v.name == vm.name }
-        loop do 
+        loop do
           if not vm.ip_address.nil? and not vm.ip_address.empty?
             puts "\n#{ui.color("VM IP Address: #{vm.ip_address}", :cyan)}"
             break
@@ -421,7 +421,7 @@ class Chef
         bootstrap.config[:async] = config[:async]
         bootstrap.config[:run_list] = config[:run_list]
         bootstrap.config[:first_boot_attributes] = config[:json_attributes]
-        bootstrap.config[:ssh_user] = config[:ssh_user] 
+        bootstrap.config[:ssh_user] = config[:ssh_user]
         bootstrap.config[:identity_file] = config[:identity_file]
         bootstrap.config[:chef_node_name] = config[:chef_node_name] || vm.name
         bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)

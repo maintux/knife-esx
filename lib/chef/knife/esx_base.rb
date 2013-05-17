@@ -1,6 +1,6 @@
 #
-# Author:: Sergio Rubio (<rubiojr@frameos.org>)
-# Copyright:: Sergio Rubio (c) 2011
+# Author:: Sergio Rubio, Massimo Maino (<maintux@gmail.com>)
+# Copyright:: Sergio Rubio, Massimo Maino (c) 2011
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,13 +52,13 @@ class Chef
             :description => "Your ESX host address",
             :default => "127.0.0.1",
             :proc => Proc.new { |host| Chef::Config[:knife][:esx_host] = host }
-            
+
           option :free_license,
             :long => "--free-license",
             :description => "If your Hypervisor have a free license",
             :boolean => true,
             :default => false
-            
+
           option :insecure,
             :long => "--insecure",
             :description => "Insecure connection",
