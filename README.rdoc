@@ -56,7 +56,7 @@ You also have the option of passing your ESX Host/Username/Password into the ind
                         --datastore datastore1 \
                         --esx-host server1 \
                         --use-template ubuntu12.04-template-x64.vmdk \
-                        --esx-templates-dir /vmfs/volumes/datastore1/ubuntu12.04-template-x64/ubuntu12.04-template-x64.vmdk
+                        --esx-templates-dir /vmfs/volumes/datastore1/ubuntu12.04-template-x64
 
 = SUBCOMMANDS:
 
