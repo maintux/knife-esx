@@ -105,9 +105,9 @@ Deletes a template
 
     --force-delete YES|NO => Do note confirm the deletion if yes (default: no)
 
-= Examples
+== Examples
 
-== Provision a new Ubuntu 11.10 VM using --vm-disk to import a local vmdk file.
+=== Provision a new Ubuntu 11.10 VM using --vm-disk to import a local vmdk file.
 
     knife esx vm create --template-file ~/.chef/bootstrap/ubuntu11.10-gems.erb \
                         --vm-disk /path-to/ubuntu1110-x64-vmware-tools.vmdk \
@@ -116,7 +116,7 @@ Deletes a template
                         --esx-host my-test-host \
                         --esx-password secret
 
-== Provision a new ubuntu 12.04 VM using --use-template to specify a template on the ESXi Host.
+=== Provision a new ubuntu 12.04 VM using --use-template to specify a template on the ESXi Host.
 
 The command assumes that you have an ubuntu template located at /vmfs/volumes/datastore1/esx-gem/templates/ubuntu12.04-template-x64.vmdk.
 In this example we also changed the location of the datastore from the default datastore1 to datastore2.
@@ -128,7 +128,7 @@ In this example we also changed the location of the datastore from the default d
                         --esx-password secret \
                         --use-template ubuntu12.04-template-x64.vmdk
 
-== Provision a new ubuntu 12.04 VM using --esx-templates-dir to specify a template directory on the ESXi host.
+=== Provision a new ubuntu 12.04 VM using --esx-templates-dir to specify a template directory on the ESXi host.
 
 In this example, the template is located at /vmfs/volumes/datastore1/ubuntu12.04-template-x64/ubuntu12.04-template-x64.vmdk.
 
