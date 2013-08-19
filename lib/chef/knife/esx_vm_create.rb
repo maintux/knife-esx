@@ -231,6 +231,11 @@ class Chef
         :long => "--ssh-password PASSWORD",
         :description => "The ssh password"
 
+      option :ssh_gateway,
+        :short => "-G GATEWAY",
+        :long => "--ssh-gateway GATEWAY",
+        :description => "The ssh gateway"
+
       option :identity_file,
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
@@ -432,6 +437,7 @@ class Chef
         bootstrap.config[:environment] = config[:environment]
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
         bootstrap.config[:ssh_password] = config[:ssh_password]
+        bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
         bootstrap
       end
 
