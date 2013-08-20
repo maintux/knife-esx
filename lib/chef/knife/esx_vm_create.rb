@@ -280,14 +280,19 @@ class Chef
         :default => nil
 
       def tcp_test_ssh(hostname)
-        tcp_socket = TCPSocket.new(hostname, 22)
-        readable = IO.select([tcp_socket], nil, nil, 5)
-        if readable
-          Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
-          yield
-          true
+        if config[:ssh_gateway]
+          print "\n#{ui.color("Can't test connection through gateway, sleeping 10 seconds... ", :magenta)}"
+          sleep 10
         else
-          false
+          tcp_socket = TCPSocket.new(hostname, 22)
+          readable = IO.select([tcp_socket], nil, nil, 5)
+          if readable
+            Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
+            yield
+            true
+          else
+            false
+          end
         end
       rescue Errno::ETIMEDOUT, Errno::EPERM
         false
