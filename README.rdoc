@@ -59,7 +59,8 @@ Provisions a new virtual machine in the ESX host and then perform a Chef bootstr
 
     --vm-disk FILE                                            The path to the VMDK disk file
     --vm-name NAME                                            The Virtual Machine name
-    --vm-cpus CPUS                                            The Virtual Machine cpus (default: 1)
+    --vm-cpus CPUS                                            The Virtual Machine total number of virtual cpus (for the calculation see below) (default: 1)
+    --vm-cpu-cores CPU_CORES                                  The number of cores per CPU socket. The number of sockets is calculated as <CPUS>=<SOCKETS>*<CPU_CORES> (default: 1)
     --datastore NAME                                          The Datastore to use for the VM files (default: datastore1)
     --guest-id NAME                                           The VM GuestID (default: otherGuest)
     --vm-memory MEM                                           The VM memory in MB (default: 512)
