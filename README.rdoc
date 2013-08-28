@@ -38,12 +38,12 @@ You also have the option of passing your ESX Host/Username/Password into the ind
 
 == Command line basic options
 
-    --esx-host HOST => The ESX host to connect to (default: 127.0.0.1)
-    --esx-username USERNAME => The ESX username used to connect to the host (default: root)
-    --esx-password PASSWORD => The ESX user password
-    --esx-templates-dir TEMPLATES_DIRECTORY => The folder where the VM template is stored
-    --free-license => If the ESX(i) host has a free license (default: false)
-    --insecure => Use an insecure connection (default: true)
+    --esx-host HOST                           The ESX host to connect to (default: 127.0.0.1)
+    --esx-username USERNAME                   The ESX username used to connect to the host (default: root)
+    --esx-password PASSWORD                   The ESX user password
+    --esx-templates-dir TEMPLATES_DIRECTORY   The folder where the VM template is stored
+    --free-license                            If the ESX(i) host has a free license (default: false)
+    --insecure                                Use an insecure connection (default: true)
 
 For subcommand specific options, refer to the related subcommand
 
@@ -57,29 +57,31 @@ Provisions a new virtual machine in the ESX host and then perform a Chef bootstr
 
 === Command line options
 
-    --vm-disk FILE => The path to the VMDK disk file
-    --vm-name NAME => The Virtual Machine name
-    --vm-cpus CPUS => The Virtual Machine cpus (default: 1)
-    --datastore NAME => The Datastore to use for the VM files (default: datastore1)
-    --guest-id NAME => The VM GuestID (default: otherGuest)
-    --vm-memory MEM => The VM memory in MB (default: 512)
-    -N NAME | --node-name NAME => The Chef node name for your new node
-    --prerelease => Install the pre-release chef gems
-    --bootstrap-version VERSION => The version of Chef to install
-    -d DISTRO | --distro DISTRO => Bootstrap a distro using a template (default: ubuntu10.04-gems)
-    --template-file TEMPLATE => Full path to location of template to use
-    --use-template NAME => Try to use an existing template instead of importing disk
-    -r RUN_LIST | --run-list RUN_LIST => Comma separated list of roles/recipes to apply
-    -j JSON_ATTRIBUTES | --json-attributes JSON_ATTRIBUTES => A JSON string to be added to the first run of chef-client
-    -x USERNAME | --ssh-user USERNAME => The ssh username (default: root)
-    -P PASSWORD | --ssh-password PASSWORD => The ssh password
-    -i IDENTITY_FILE | --identity-file IDENTITY_FILE => The SSH identity file used for authentication
-    --no-host-key-verify => Disable host key verification
-    -N network[,network..] | --vm-network => Network where nic is attached to (default: 'VM Network')
-    -M mac[,mac..] | --mac-address mac[,mac..] => Mac address list
-    --skip-bootstrap => Skip bootstrap process (Deploy only mode)
-    --async => Deploy the VMs asynchronously (Ignored unless combined with --batch)
-    --batch script.yml => Use a batch file to deploy multiple VMs
+    --vm-disk FILE                                            The path to the VMDK disk file
+    --vm-name NAME                                            The Virtual Machine name
+    --vm-cpus CPUS                                            The Virtual Machine total number of virtual cpus (for the calculation see below) (default: 1)
+    --vm-cpu-cores CPU_CORES                                  The number of cores per CPU socket. The number of sockets is calculated as <CPUS>=<SOCKETS>*<CPU_CORES> (default: 1)
+    --datastore NAME                                          The Datastore to use for the VM files (default: datastore1)
+    --guest-id NAME                                           The VM GuestID (default: otherGuest)
+    --vm-memory MEM                                           The VM memory in MB (default: 512)
+    -N NAME | --node-name NAME                                The Chef node name for your new node
+    --prerelease                                              Install the pre-release chef gems
+    --bootstrap-version VERSION                               The version of Chef to install
+    -d DISTRO | --distro DISTRO                               Bootstrap a distro using a template (default: ubuntu10.04-gems)
+    --template-file TEMPLATE                                  Full path to location of template to use
+    --use-template NAME                                       Try to use an existing template instead of importing disk
+    -r RUN_LIST | --run-list RUN_LIST                         Comma separated list of roles/recipes to apply
+    -j JSON_ATTRIBUTES | --json-attributes JSON_ATTRIBUTES    A JSON string to be added to the first run of chef-client
+    -x USERNAME | --ssh-user USERNAME                         The ssh username (default: root)
+    -P PASSWORD | --ssh-password PASSWORD                     The ssh password
+    -G GATEWAY | --ssh-gateway GATEWAY                        The ssh password
+    -i IDENTITY_FILE | --identity-file IDENTITY_FILE          The SSH identity file used for authentication
+    --no-host-key-verify                                      Disable host key verification
+    -N network[,network..] | --vm-network                     Network where nic is attached to (default: 'VM Network')
+    -M mac[,mac..] | --mac-address mac[,mac..]                Mac address list
+    --skip-bootstrap                                          Skip bootstrap process (Deploy only mode)
+    --async                                                   Deploy the VMs asynchronously (Ignored unless combined with --batch)
+    --batch script.yml                                        Use a batch file to deploy multiple VMs
 
 == knife esx vm delete
 
@@ -87,7 +89,7 @@ Deletes an existing virtual machine in the currently configured ESX host by the 
 
 === Command line options
 
-    --force-delete YES|NO => Do note confirm the deletion if yes (default: no)
+    --force-delete YES|NO     Don't confirm the deletion if yes (default: no)
 
 == knife esx vm list
 
@@ -103,7 +105,7 @@ Deletes a template
 
 === Command line options
 
-    --force-delete YES|NO => Do note confirm the deletion if yes (default: no)
+    --force-delete YES|NO     Don't confirm the deletion if yes (default: no)
 
 == Examples
 

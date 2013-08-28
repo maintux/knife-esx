@@ -159,6 +159,10 @@ class Chef
         :long => "--vm-cpus CPUS",
         :description => "The Virtual Machine cpus (default: 1)"
 
+      option :cpu_cores,
+        :long => "--vm-cpu-cores CPU_CORES",
+        :description => "The Virtual Machine cores per cpu (default: 1)"
+
       option :datastore,
         :long => "--datastore NAME",
         :default => 'datastore1',
@@ -231,6 +235,11 @@ class Chef
         :long => "--ssh-password PASSWORD",
         :description => "The ssh password"
 
+      option :ssh_gateway,
+        :short => "-G GATEWAY",
+        :long => "--ssh-gateway GATEWAY",
+        :description => "The ssh gateway"
+
       option :identity_file,
         :short => "-i IDENTITY_FILE",
         :long => "--identity-file IDENTITY_FILE",
@@ -275,14 +284,19 @@ class Chef
         :default => nil
 
       def tcp_test_ssh(hostname)
-        tcp_socket = TCPSocket.new(hostname, 22)
-        readable = IO.select([tcp_socket], nil, nil, 5)
-        if readable
-          Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
-          yield
-          true
+        if config[:ssh_gateway]
+          print "\n#{ui.color("Can't test connection through gateway, sleeping 10 seconds... ", :magenta)}"
+          sleep 10
         else
-          false
+          tcp_socket = TCPSocket.new(hostname, 22)
+          readable = IO.select([tcp_socket], nil, nil, 5)
+          if readable
+            Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
+            yield
+            true
+          else
+            false
+          end
         end
       rescue Errno::ETIMEDOUT, Errno::EPERM
         false
@@ -350,6 +364,7 @@ class Chef
         datastore = config[:datastore]
         memory = config[:memory]
         cpus = config[:cpus]||1
+        cpu_cores = config[:cpu_cores]||1
         vm_disk = config[:vm_disk]
         guest_id =config[:guest_id]
         destination_path = "/vmfs/volumes/#{datastore}/#{vm_name}"
@@ -375,6 +390,7 @@ class Chef
                              :disk_file => "#{vm_name}/#{vm_name}.vmdk",
                              :memory => memory,
                              :cpus => cpus,
+                             :cpu_cores => cpu_cores,
                              :guest_id => guest_id,
                              :nics => create_nics(config[:vm_network], config[:mac_address])
         vm.power_on
@@ -432,6 +448,7 @@ class Chef
         bootstrap.config[:environment] = config[:environment]
         bootstrap.config[:no_host_key_verify] = config[:no_host_key_verify]
         bootstrap.config[:ssh_password] = config[:ssh_password]
+        bootstrap.config[:ssh_gateway] = config[:ssh_gateway]
         bootstrap
       end
 
