@@ -57,22 +57,11 @@ module KnifeESX
 
   end
 
-  class CLogger
-    include Celluloid
-    include Singleton
-
-    def info(msg)
-      puts "INFO: #{msg}"
-    end
-
-    def error(msg)
-      $stderr.puts "ERROR: #{msg}"
-    end
-  end
-
   class DeployJob
 
     include Celluloid
+
+    Celluloid.logger = Chef::Log.logger
 
     attr_reader :name
 
@@ -109,18 +98,18 @@ module KnifeESX
         optstring << "   - #{k}:".ljust(25) +  "#{v}\n" unless k =~ /password/
       end
       log_file = "/tmp/knife_esx_vm_create_#{@name.to_s.strip.chomp.gsub(/\s/,'_')}.log"
-      KnifeESX::CLogger.instance.info! "Bootstrapping VM #{@name} \n#{optstring.join}"
-      KnifeESX::CLogger.instance.info! "VM #{@name} bootstrap log: #{log_file}"
+      Chef::Log.info "Bootstrapping VM #{@name} \n#{optstring.join}"
+      Chef::Log.info "VM #{@name} bootstrap log: #{log_file}"
       @status = Open4.popen4("knife esx vm create --vm-name #{@name} #{args} #{extra_args} > #{log_file} 2>&1") do |pid, stdin, stdout, stderr|
         @out << stdout.read.strip
         @err << stderr.read.strip
       end
       if @status == 0
-        KnifeESX::CLogger.instance.info! "[#{@name}] deployment finished OK"
+        Chef::Log.info "[#{@name}] deployment finished OK"
       else
-        KnifeESX::CLogger.instance.error! "[#{@name}] deployment FAILED"
+        Chef::Log.error "[#{@name}] deployment FAILED"
         @err.each_line do |l|
-          KnifeESX::CLogger.instance.error! "[#{@name}] #{l.chomp}"
+          Chef::Log.error "[#{@name}] #{l.chomp}"
         end
       end
       return @status, @out, @err
@@ -311,7 +300,7 @@ class Chef
         $stdout.sync = true
 
         if config[:batch]
-          KnifeESX::CLogger.instance.info "Running in batch mode. Extra arguments will be ignored."
+          Chef::Log.info "Running in batch mode. Extra arguments will be ignored."
           if not config[:async]
             counter = 0
             script = KnifeESX::DeployScript.new(config[:batch])
@@ -319,17 +308,17 @@ class Chef
               counter += 1
               status, stdout, stderr = job.run
               if status == 0
-                KnifeESX::CLogger.instance.info 'Ok'
+                Chef::Log.info 'Ok'
               else
-                KnifeESX::CLogger.instance.error 'Failed'
+                Chef::Log.error 'Failed'
                 stderr.each_line do |l|
                   ui.error l
                 end
               end
             end
           else
-            KnifeESX::CLogger.instance.info! "Asynchronous boostrapping selected"
-            KnifeESX::CLogger.instance.info! "Now do something productive while I finish my job ;)"
+            Chef::Log.info "Asynchronous boostrapping selected"
+            Chef::Log.info "Now do something productive while I finish my job ;)"
             script = KnifeESX::DeployScript.new(config[:batch])
             futures = []
             script.each_job do |job|
