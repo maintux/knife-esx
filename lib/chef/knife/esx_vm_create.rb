@@ -18,7 +18,6 @@
 
 require 'chef/knife/esx_base'
 require 'open4'
-require 'celluloid'
 require 'singleton'
 require 'yaml'
 
@@ -58,10 +57,6 @@ module KnifeESX
   end
 
   class DeployJob
-
-    include Celluloid
-
-    Celluloid.logger = Chef::Log.logger
 
     attr_reader :name
 
