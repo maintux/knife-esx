@@ -8,7 +8,7 @@ You'll need an ESX(i)4/5 host with SSH enabled and a privileged user account to 
 
 You'll also need a base VM template (a VMDK in fact) with CentOS/Ubuntu/Fedora and vmware-tools installed.
 
-If you're using VMWare ESXi with a free license, don't forget the <tt>--free-license</tt> option or you'll get the following error:
+If you're using VMWare ESXi with a free license, don't forget the `--free-license` option or you'll get the following error:
 
     ERROR: RbVmomi::Fault: RestrictedVersion: Current license or ESXi version prohibits execution of the requested operation
 
@@ -28,17 +28,17 @@ Depending on your system's configuration, you may need to run this command with 
 
 ## CONFIGURATION:
 
-In order to communicate with the ESX Cloud API you will have to tell Knife about your Username and API Key.  The easiest way to accomplish this is to create some entries in your <tt>knife.rb</tt> file:
+In order to communicate with the ESX Cloud API you will have to tell Knife about your Username and API Key.  The easiest way to accomplish this is to create some entries in your `knife.rb` file:
 
     knife[:esx_host] = "Your ESX host address"
     knife[:esx_username]  = "root"
     knife[:esx_password]  = "secret"
 
-You also have the option of passing your ESX Host/Username/Password into the individual knife subcommands using the <tt>--esx-host</tt> <tt>--esx-username</tt> and <tt>--esx-password</tt> command options
+You also have the option of passing your ESX Host/Username/Password into the individual knife subcommands using the `--esx-host` `--esx-username` and `--esx-password` command options
 
 ## COMMAND LINE BASIC OPTIONS
 
-<pre>
+<pre style="word-wrap: normal;">
 --esx-host HOST                           The ESX host to connect to (default: 127.0.0.1)
 --esx-username USERNAME                   The ESX username used to connect to the host (default: root)
 --esx-password PASSWORD                   The ESX user password
@@ -55,15 +55,15 @@ This plugin provides the following Knife subcommands.  Specific command options 
 
 ### knife esx vm create
 
-Provisions a new virtual machine in the ESX host and then perform a Chef bootstrap (using the SSH protocol).  The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef server.  By default the virtual machine is bootstrapped using the {ubuntu10.04-gems}[https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/ubuntu10.04-gems.erb] template.  This can be overridden using the <tt>-d</tt> or <tt>--template-file</tt> command options.
+Provisions a new virtual machine in the ESX host and then perform a Chef bootstrap (using the SSH protocol).  The goal of the bootstrap is to get Chef installed on the target system so it can run Chef Client with a Chef Server. The main assumption is a baseline OS installation exists (provided by the provisioning). It is primarily intended for Chef Client systems that talk to a Chef server.  By default the virtual machine is bootstrapped using the {ubuntu10.04-gems}[https://github.com/opscode/chef/blob/master/chef/lib/chef/knife/bootstrap/ubuntu10.04-gems.erb] template.  This can be overridden using the `-d` or `--template-file` command options.
 
 #### _Command line options_
 
-<pre>
+<pre style="word-wrap: normal;">
 --vm-disk FILE                                            The path to the VMDK disk file
 --vm-name NAME                                            The Virtual Machine name
 --vm-cpus CPUS                                            The Virtual Machine total number of virtual cpus (for the calculation see below) (default: 1)
---vm-cpu-cores CPU_CORES                                  The number of cores per CPU socket. The number of sockets is calculated as <CPUS>=<SOCKETS>*<CPU_CORES> (default: 1)
+--vm-cpu-cores CPU_CORES                                  The number of cores per CPU socket. The number of sockets is calculated as &lt;CPUS&gt;=&lt;SOCKETS&gt;*&lt;CPU_CORES&gt; (default: 1)
 --datastore NAME                                          The Datastore to use for the VM files (default: datastore1)
 --guest-id NAME                                           The VM GuestID (default: otherGuest)
 --vm-memory MEM                                           The VM memory in MB (default: 512)
@@ -103,7 +103,7 @@ Outputs a list of all virtual machines in the currently configured ESX host.  Pl
 
 Outputs a list of all templates in the currently configured ESX host.
 
-### knife esx template delete TEMPLATE_NAME [TEMPLATE_NAME] (options)
+### knife esx template delete TEMPLATE_NAME
 
 Deletes a template
 
