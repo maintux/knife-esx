@@ -237,8 +237,7 @@ class Chef
         :proc => Proc.new { true }
 
       option :vm_network,
-        :short => "-N network[,network..]",
-        :long => "--vm-network",
+        :long => "--vm-network network[,network..]",
         :description => "Network where nic is attached to",
         :default => 'VM Network'
 
