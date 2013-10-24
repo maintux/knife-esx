@@ -38,6 +38,7 @@ You also have the option of passing your ESX Host/Username/Password into the ind
 
 ## COMMAND LINE BASIC OPTIONS
 
+<pre>
 <code>
 --esx-host HOST                           The ESX host to connect to (default: 127.0.0.1)
 --esx-username USERNAME                   The ESX username used to connect to the host (default: root)
@@ -46,6 +47,7 @@ You also have the option of passing your ESX Host/Username/Password into the ind
 --free-license                            If the ESX(i) host has a free license (default: false)
 --insecure                                Use an insecure connection (default: true)
 </code>
+</pre>
 
 For subcommand specific options, refer to the related subcommand
 
@@ -59,6 +61,7 @@ Provisions a new virtual machine in the ESX host and then perform a Chef bootstr
 
 #### _Command line options_
 
+<pre>
 <code>
 --vm-disk FILE                                            The path to the VMDK disk file
 --vm-name NAME                                            The Virtual Machine name
@@ -86,6 +89,7 @@ Provisions a new virtual machine in the ESX host and then perform a Chef bootstr
 --async                                                   Deploy the VMs asynchronously (Ignored unless combined with --batch)
 --batch script.yml                                        Use a batch file to deploy multiple VMs
 </code>
+</pre>
 
 ### knife esx vm delete
 
