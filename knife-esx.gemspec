@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/maintux/knife-esx"
   s.summary = "ESX Support for Chef's Knife Command"
   s.description = s.summary
-  s.extra_rdoc_files = ["README.rdoc", "LICENSE" ]
+  s.extra_rdoc_files = ["README.md", "LICENSE" ]
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
