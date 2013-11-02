@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.summary = "ESX Support for Chef's Knife Command"
   s.description = s.summary
   s.extra_rdoc_files = ["README.md", "LICENSE" ]
+  s.license       = 'Apache 2.0'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
