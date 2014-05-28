@@ -39,23 +39,23 @@ class Chef
           option :esx_password,
             :long => "--esx-password PASSWORD",
             :description => "Your ESX password",
-            :proc => Proc.new { |key| Chef::Config[:knife][:esx_password] = key }
+            :proc => Proc.new { |key| $param_key = key }
 
           option :esx_username,
             :long => "--esx-username USERNAME",
             :default => "root",
             :description => "Your ESX username (default 'root')",
-            :proc => Proc.new { |username| Chef::Config[:knife][:esx_username] = (username || 'root') }
+            :proc => Proc.new { |username| $param_username = (username || 'root') }
 
           option :esx_host,
             :long => "--esx-host ADDRESS",
             :description => "Your ESX host address",
             :default => "127.0.0.1",
-            :proc => Proc.new { |host| Chef::Config[:knife][:esx_host] = host }
+            :proc => Proc.new { |host| $param_host = host }
 
           option :free_license,
             :long => "--free-license",
-            :description => "If your Hypervisor have a free license",
+            :description => "If your Hypervisor has a free license",
             :boolean => true,
             :default => false
 
@@ -69,12 +69,20 @@ class Chef
             :long => "--esx-templates-dir TEMPLATES_DIRECTORY",
             :description => "Your ESX Templates directory",
             :default => "",
-            :proc => Proc.new { |templates_dir| Chef::Config[:knife][:esx_templates_dir] = templates_dir }
+            :proc => Proc.new { |templates_dir| $param_templates_dir = templates_dir }
         end
       end
 
+
+      def self.commit_config()
+        if $param_key != nil then Chef::Config[:knife][:esx_password] = $param_key end
+	if $param_username != nil then Chef::Config[:knife][:esx_username] = $param_username end
+	if $param_host != nil then Chef::Config[:knife][:esx_host] = $param_host end
+	if $param_templates_dir != nil then Chef::Config[:knife][:esx_templates_dir] = $param_templates_dir end
+      end
+
       def connection
-        Chef::Config[:knife][:esx_username] = 'root' if not Chef::Config[:knife][:esx_username]
+        ESXBase.commit_config() # write mixlib configuration now to ensure command line args override knife.rb settings
         if not @connection
           ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
