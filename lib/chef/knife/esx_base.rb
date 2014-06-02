@@ -22,6 +22,11 @@ class Chef
   class Knife
     module ESXBase
 
+      class << self # create public static command_param attribute
+        attr_accessor :command_param
+      end
+      self.command_param = Hash.new
+
       # :nodoc:
       # Would prefer to do this in a rational way, but can't be done b/c of
       # Mixlib::CLI's design :(
@@ -39,19 +44,19 @@ class Chef
           option :esx_password,
             :long => "--esx-password PASSWORD",
             :description => "Your ESX password",
-            :proc => Proc.new { |key| $param_key = key }
+            :proc => Proc.new { |key| ESXBase.command_param[:key] = key }
 
           option :esx_username,
             :long => "--esx-username USERNAME",
             :default => "root",
             :description => "Your ESX username (default 'root')",
-            :proc => Proc.new { |username| $param_username = (username || 'root') }
+            :proc => Proc.new { |username| ESXBase.command_param[:user] = (username || 'root') }
 
           option :esx_host,
             :long => "--esx-host ADDRESS",
             :description => "Your ESX host address",
             :default => "127.0.0.1",
-            :proc => Proc.new { |host| $param_host = host }
+            :proc => Proc.new { |host| ESXBase.command_param[:host] = host }
 
           option :free_license,
             :long => "--free-license",
@@ -69,7 +74,7 @@ class Chef
             :long => "--esx-templates-dir TEMPLATES_DIRECTORY",
             :description => "Your ESX Templates directory",
             :default => "",
-            :proc => Proc.new { |templates_dir| $param_templates_dir = templates_dir }
+            :proc => Proc.new { |templates_dir| ESXBase.command_param[:templates_dir] = templates_dir }
 
           ESXBase::commit_config # Apply config now, just in case it is needed now. Will re-apply when connecting.
         end
@@ -77,10 +82,10 @@ class Chef
 
 
       def self.commit_config()
-        if $param_key != nil then Chef::Config[:knife][:esx_password] = $param_key end
-        if $param_username != nil then Chef::Config[:knife][:esx_username] = $param_username end
-        if $param_host != nil then Chef::Config[:knife][:esx_host] = $param_host end
-        if $param_templates_dir != nil then Chef::Config[:knife][:esx_templates_dir] = $param_templates_dir end
+        if ESXBase.command_param[:key] != nil then Chef::Config[:knife][:esx_password] = ESXBase.command_param[:key] end
+        if ESXBase.command_param[:user] != nil then Chef::Config[:knife][:esx_username] = ESXBase.command_param[:user] end
+        if ESXBase.command_param[:host] != nil then Chef::Config[:knife][:esx_host] = ESXBase.command_param[:host] end
+        if ESXBase.command_param[:templates_dir] != nil then Chef::Config[:knife][:esx_templates_dir] = ESXBase.command_param[:templates_dir] end
       end
 
       def connection
