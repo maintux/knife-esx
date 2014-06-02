@@ -70,19 +70,21 @@ class Chef
             :description => "Your ESX Templates directory",
             :default => "",
             :proc => Proc.new { |templates_dir| $param_templates_dir = templates_dir }
+
+          ESXBase::commit_config # Apply config now, just in case it is needed now. Will re-apply when connecting.
         end
       end
 
 
       def self.commit_config()
         if $param_key != nil then Chef::Config[:knife][:esx_password] = $param_key end
-	if $param_username != nil then Chef::Config[:knife][:esx_username] = $param_username end
-	if $param_host != nil then Chef::Config[:knife][:esx_host] = $param_host end
-	if $param_templates_dir != nil then Chef::Config[:knife][:esx_templates_dir] = $param_templates_dir end
+        if $param_username != nil then Chef::Config[:knife][:esx_username] = $param_username end
+        if $param_host != nil then Chef::Config[:knife][:esx_host] = $param_host end
+        if $param_templates_dir != nil then Chef::Config[:knife][:esx_templates_dir] = $param_templates_dir end
       end
 
       def connection
-        ESXBase.commit_config() # write mixlib configuration now to ensure command line args override knife.rb settings
+        ESXBase.commit_config # write mixlib configuration now to ensure command line args override knife.rb settings
         if not @connection
           ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
