@@ -185,13 +185,13 @@ class Chef
 
       option :template_file,
         :long => "--template-file TEMPLATE",
-        :description => "Full path to location of template to use",
+        :description => "Full path to location of template to use for Chef bootstrap (this is not the ESX template)",
         :proc => Proc.new { |t| Chef::Config[:knife][:template_file] = t },
         :default => false
 
       option :use_template,
         :long => "--use-template NAME",
-        :description => "Try to use an existing template instead of importing disk",
+        :description => "Use an existing template on the ESX host instead of importing disk (NAME is essentially a vmdk file)",
         :default => nil
 
       option :run_list,
@@ -361,7 +361,7 @@ class Chef
             puts "#{ui.color("Cloning template...",:magenta)}"
             connection.copy_from_template config[:use_template], destination_path + "/#{vm_name}.vmdk"
           else
-            ui.error "Template #{config[:use_template]} not found"
+            ui.error "Template #{config[:use_template]} not found in directory #{connections.templates_dir}. You can specify the directory using --esx-templates-dir."
             exit 1
           end
         else

@@ -72,7 +72,7 @@ class Chef
 
           option :esx_templates_dir,
             :long => "--esx-templates-dir TEMPLATES_DIRECTORY",
-            :description => "Your ESX Templates directory",
+            :description => "Your ESX Templates directory (full path on the ESX host, e.g. /vmfs/volumes/[datastore]/...)",
             :default => "",
             :proc => Proc.new { |templates_dir| ESXBase.command_param[:templates_dir] = templates_dir }
 
