@@ -361,7 +361,7 @@ class Chef
             puts "#{ui.color("Cloning template...",:magenta)}"
             connection.copy_from_template config[:use_template], destination_path + "/#{vm_name}.vmdk"
           else
-            ui.error "Template #{config[:use_template]} not found in directory #{connections.templates_dir}. You can specify the directory using --esx-templates-dir."
+            ui.error "Template #{config[:use_template]} not found in directory #{connection.templates_dir}. You can specify the directory using --esx-templates-dir."
             exit 1
           end
         else
