@@ -174,19 +174,19 @@ class Chef
       option :bootstrap_version,
         :long => "--bootstrap-version VERSION",
         :description => "The version of Chef to install",
-        :proc => Proc.new { |v| Chef::Config[:knife][:bootstrap_version] = v }
+        :proc => Proc.new { |v| ESXBase.command_param[:bootstrap_version] = v }
 
       option :distro,
         :short => "-d DISTRO",
         :long => "--distro DISTRO",
         :description => "Bootstrap a distro using a template; default is 'ubuntu10.04-gems'",
-        :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
+        :proc => Proc.new { |d| ESXBase.command_param[:distro] = d },
         :default => "ubuntu10.04-gems"
 
       option :template_file,
         :long => "--template-file TEMPLATE",
         :description => "Full path to location of template to use for Chef bootstrap (this is not the ESX template)",
-        :proc => Proc.new { |t| Chef::Config[:knife][:template_file] = t },
+        :proc => Proc.new { |t| ESXBase.command_param[:template_file] = t },
         :default => false
 
       option :use_template,
@@ -211,13 +211,13 @@ class Chef
       option :ssh_user,
         :short => "-x USERNAME",
         :long => "--ssh-user USERNAME",
-        :description => "The ssh username; default is 'root'",
+        :description => "The ssh username to use on the new VM; default is 'root'. This must match settings in your disk image.",
         :default => "root"
 
       option :ssh_password,
         :short => "-P PASSWORD",
         :long => "--ssh-password PASSWORD",
-        :description => "The ssh password"
+        :description => "The ssh password to use on the new VM. This must match settings in your disk image."
 
       option :ssh_gateway,
         :short => "-G GATEWAY",

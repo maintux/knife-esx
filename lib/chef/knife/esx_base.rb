@@ -86,6 +86,9 @@ class Chef
         if ESXBase.command_param[:user] != nil then Chef::Config[:knife][:esx_username] = ESXBase.command_param[:user] end
         if ESXBase.command_param[:host] != nil then Chef::Config[:knife][:esx_host] = ESXBase.command_param[:host] end
         if ESXBase.command_param[:templates_dir] != nil then Chef::Config[:knife][:esx_templates_dir] = ESXBase.command_param[:templates_dir] end
+        if ESXBase.command_param[:bootstrap_version] != nil then Chef::Config[:knife][:bootstrap_version] = ESXBase.command_param[:bootstrap_version] end
+        if ESXBase.command_param[:distro] != nil then Chef::Config[:knife][:distro] = ESXBase.command_param[:distro] end
+        if ESXBase.command_param[:template_file] != nil then Chef::Config[:knife][:template_file] = ESXBase.command_param[:template_file] end
       end
 
       def connection
