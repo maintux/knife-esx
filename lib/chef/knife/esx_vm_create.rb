@@ -20,6 +20,7 @@ require 'chef/knife/esx_base'
 require 'open4'
 require 'singleton'
 require 'yaml'
+require 'net/ssh'
 
 module KnifeESX
   class DeployScript
@@ -266,29 +267,11 @@ class Chef
         :description => "Use a batch file to deploy multiple VMs",
         :default => nil
 
-      def tcp_test_ssh(hostname)
-        if config[:ssh_gateway]
-          print "\n#{ui.color("Can't test connection through gateway, sleeping 10 seconds... ", :magenta)}"
-          sleep 10
-        else
-          tcp_socket = TCPSocket.new(hostname, 22)
-          readable = IO.select([tcp_socket], nil, nil, 5)
-          if readable
-            Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
-            yield
-            true
-          else
-            false
-          end
-        end
-      rescue Errno::ETIMEDOUT, Errno::EPERM
-        false
-      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
-        sleep 2
-        false
-      ensure
-        tcp_socket && tcp_socket.close
-      end
+      option :encrypted_root,
+        :long => "--encrypted-root PASSWORD",
+	:description => "If the disk image has an encrypted root file system decrypt before bootstrap. This only works if your disk image is set up for decryption via SSH and has VMWare tools in initrd.",
+	:default => nil
+
 
       def run
         $stdout.sync = true
@@ -384,26 +367,13 @@ class Chef
 
         return if config[:skip_bootstrap]
 
-        # wait for it to be ready to do stuff
-        print "\n#{ui.color("Waiting server... ", :magenta)}"
-        timeout = 100
-        found = connection.virtual_machines.find { |v| v.name == vm.name }
-        loop do
-          if not vm.ip_address.nil? and not vm.ip_address.empty?
-            puts "\n#{ui.color("VM IP Address: #{vm.ip_address}", :cyan)}"
-            break
-          end
-          timeout -= 1
-          if timeout == 0
-            ui.error "Timeout trying to reach the VM. Does it have vmware-tools installed?"
-            exit 1
-          end
-          sleep 1
-          found = connection.virtual_machines.find { |v| v.name == vm.name }
-        end
+	if config[:encrypted_root]
+          ui.info "Trying to decrypt root file system as you specified."
+          require 'chef/knife/esx_vm_decrypt'
+          EsxVmDecrypt.decrypt self, vm, "root", config[:ssh_password], config[:encrypted_root]
+	end
 
-        print "\n#{ui.color("Waiting for sshd... ", :magenta)}"
-        print(".") until tcp_test_ssh(vm.ip_address) { sleep @initial_sleep_delay ||= 10; puts(" done") }
+        wait_for_ssh(vm)
         bootstrap_for_node(vm).run
 
         puts "\n"
@@ -413,6 +383,8 @@ class Chef
         puts "#{ui.color("Run List", :cyan)}: #{config[:run_list].join(', ')}"
         puts "#{ui.color("Done!", :green)}"
       end
+
+
 
       def bootstrap_for_node(vm)
         bootstrap = Chef::Knife::Bootstrap.new

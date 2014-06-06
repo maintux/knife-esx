@@ -91,10 +91,11 @@ class Chef
         if ESXBase.command_param[:template_file] != nil then Chef::Config[:knife][:template_file] = ESXBase.command_param[:template_file] end
       end
 
+
       def connection
         ESXBase.commit_config # write mixlib configuration now to ensure command line args override knife.rb settings
         if not @connection
-          ui.info "#{ui.color("Connecting to ESX host #{config[:esx_host]}... ", :magenta)}"
+          ui.info "#{ui.color("Connecting to ESX host #{Chef::Config[:knife][:esx_host]}... ", :magenta)}"
           @connection = ESX::Host.connect(Chef::Config[:knife][:esx_host],
                                           Chef::Config[:knife][:esx_username],
                                           Chef::Config[:knife][:esx_password] || '',
@@ -104,6 +105,57 @@ class Chef
           @connection
         end
       end
+
+
+      def wait_for_ssh vm
+        # wait for it to be ready to do stuff
+        print "\n#{ui.color("Waiting for server... ", :magenta)}"
+        timeout = 100
+        found = connection.virtual_machines.find { |v| v.name == vm.name }
+        loop do
+          if not vm.ip_address.nil? and not vm.ip_address.empty?
+            puts "\n#{ui.color("VM IP Address: #{vm.ip_address}", :cyan)}"
+            break
+          end
+          timeout -= 1
+          if timeout == 0
+            ui.error "Timeout trying to reach the VM. Does it have vmware-tools installed?"
+            return false
+          end
+          sleep 1
+          found = connection.virtual_machines.find { |v| v.name == vm.name }
+        end
+
+        print "\n#{ui.color("Waiting for sshd... ", :magenta)}"
+        print(".") until tcp_test_ssh(vm.ip_address) { sleep @initial_sleep_delay ||= 10; puts(" done") }
+      end
+
+
+      def tcp_test_ssh(hostname)
+        if config[:ssh_gateway]
+          print "\n#{ui.color("Can't test connection through gateway, sleeping 10 seconds... ", :magenta)}"
+          sleep 10
+        else
+          tcp_socket = TCPSocket.new(hostname, 22)
+          readable = IO.select([tcp_socket], nil, nil, 5)
+          if readable
+            Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
+            yield
+            true
+          else
+            false
+          end
+        end
+      rescue Errno::ETIMEDOUT, Errno::EPERM
+        false
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
+        sleep 2
+        false
+      ensure
+        tcp_socket && tcp_socket.close
+      end
+
+
 
       def locate_config_value(key)
         key = key.to_sym
