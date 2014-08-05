@@ -27,11 +27,10 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 Depending on your system's configuration, you may need to run this command with root privileges.
 
 
-If using ChefDK on OSX ( www.getchef.com/downloads/chef-dk/ ) - Currently held up by https://github.com/opscode/chef-dk/issues/46
+If using ChefDK on OSX ( www.getchef.com/downloads/chef-dk/ ) 
 
-    chef gem install alchemist knife-esx
-    /opt/chefdk/embedded/bin/gem install rbvmomi --version 1.6.0
-
+    chef gem install rbvmomi --version 1.6.0
+    chef gem install knife-esx
 
 ## CONFIGURATION:
 
