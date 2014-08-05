@@ -26,6 +26,12 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
+
+If using ChefDK on OSX ( www.getchef.com/downloads/chef-dk/ ) 
+
+    chef gem install rbvmomi --version 1.6.0
+    chef gem install knife-esx
+
 ## CONFIGURATION:
 
 In order to communicate with the ESX Cloud API you will have to tell Knife about your Username and API Key.  The easiest way to accomplish this is to create some entries in your `knife.rb` file:
