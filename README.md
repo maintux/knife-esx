@@ -1,4 +1,4 @@
-# Knife ESX
+# Knife ESX - NOTE: This project is no longer maintained
 
 ## DESCRIPTION:
 
