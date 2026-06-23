@@ -20,6 +20,7 @@ require 'chef/knife/esx_base'
 require 'open4'
 require 'singleton'
 require 'yaml'
+require 'net/ssh'
 
 module KnifeESX
   class DeployScript
@@ -174,24 +175,24 @@ class Chef
       option :bootstrap_version,
         :long => "--bootstrap-version VERSION",
         :description => "The version of Chef to install",
-        :proc => Proc.new { |v| Chef::Config[:knife][:bootstrap_version] = v }
+        :proc => Proc.new { |v| ESXBase.command_param[:bootstrap_version] = v }
 
       option :distro,
         :short => "-d DISTRO",
         :long => "--distro DISTRO",
         :description => "Bootstrap a distro using a template; default is 'ubuntu10.04-gems'",
-        :proc => Proc.new { |d| Chef::Config[:knife][:distro] = d },
-        :default => "ubuntu10.04-gems"
+        :proc => Proc.new { |d| ESXBase.command_param[:distro] = d },
+        :default => "chef-full"
 
       option :template_file,
         :long => "--template-file TEMPLATE",
-        :description => "Full path to location of template to use",
-        :proc => Proc.new { |t| Chef::Config[:knife][:template_file] = t },
+        :description => "Full path to location of template to use for Chef bootstrap (this is not the ESX template)",
+        :proc => Proc.new { |t| ESXBase.command_param[:template_file] = t },
         :default => false
 
       option :use_template,
         :long => "--use-template NAME",
-        :description => "Try to use an existing template instead of importing disk",
+        :description => "Use an existing template on the ESX host instead of importing disk (NAME is essentially a vmdk file)",
         :default => nil
 
       option :run_list,
@@ -211,13 +212,13 @@ class Chef
       option :ssh_user,
         :short => "-x USERNAME",
         :long => "--ssh-user USERNAME",
-        :description => "The ssh username; default is 'root'",
+        :description => "The ssh username to use on the new VM; default is 'root'. This must match settings in your disk image.",
         :default => "root"
 
       option :ssh_password,
         :short => "-P PASSWORD",
         :long => "--ssh-password PASSWORD",
-        :description => "The ssh password"
+        :description => "The ssh password to use on the new VM. This must match settings in your disk image."
 
       option :ssh_gateway,
         :short => "-G GATEWAY",
@@ -266,29 +267,11 @@ class Chef
         :description => "Use a batch file to deploy multiple VMs",
         :default => nil
 
-      def tcp_test_ssh(hostname)
-        if config[:ssh_gateway]
-          print "\n#{ui.color("Can't test connection through gateway, sleeping 10 seconds... ", :magenta)}"
-          sleep 10
-        else
-          tcp_socket = TCPSocket.new(hostname, 22)
-          readable = IO.select([tcp_socket], nil, nil, 5)
-          if readable
-            Chef::Log.debug("sshd accepting connections on #{hostname}, banner is #{tcp_socket.gets}")
-            yield
-            true
-          else
-            false
-          end
-        end
-      rescue Errno::ETIMEDOUT, Errno::EPERM
-        false
-      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
-        sleep 2
-        false
-      ensure
-        tcp_socket && tcp_socket.close
-      end
+      option :encrypted_root,
+        :long => "--encrypted-root PASSWORD",
+	:description => "If the disk image has an encrypted root file system decrypt before bootstrap. This only works if your disk image is set up for decryption via SSH and has VMWare tools in initrd.",
+	:default => nil
+
 
       def run
         $stdout.sync = true
@@ -361,7 +344,7 @@ class Chef
             puts "#{ui.color("Cloning template...",:magenta)}"
             connection.copy_from_template config[:use_template], destination_path + "/#{vm_name}.vmdk"
           else
-            ui.error "Template #{config[:use_template]} not found"
+            ui.error "Template #{config[:use_template]} not found in directory #{connection.templates_dir}. You can specify the directory using --esx-templates-dir."
             exit 1
           end
         else
@@ -384,26 +367,13 @@ class Chef
 
         return if config[:skip_bootstrap]
 
-        # wait for it to be ready to do stuff
-        print "\n#{ui.color("Waiting server... ", :magenta)}"
-        timeout = 100
-        found = connection.virtual_machines.find { |v| v.name == vm.name }
-        loop do
-          if not vm.ip_address.nil? and not vm.ip_address.empty?
-            puts "\n#{ui.color("VM IP Address: #{vm.ip_address}", :cyan)}"
-            break
-          end
-          timeout -= 1
-          if timeout == 0
-            ui.error "Timeout trying to reach the VM. Does it have vmware-tools installed?"
-            exit 1
-          end
-          sleep 1
-          found = connection.virtual_machines.find { |v| v.name == vm.name }
-        end
+	if config[:encrypted_root]
+          ui.info "Trying to decrypt root file system as you specified."
+          require 'chef/knife/esx_vm_decrypt'
+          EsxVmDecrypt.decrypt self, vm, "root", config[:ssh_password], config[:encrypted_root]
+	end
 
-        print "\n#{ui.color("Waiting for sshd... ", :magenta)}"
-        print(".") until tcp_test_ssh(vm.ip_address) { sleep @initial_sleep_delay ||= 10; puts(" done") }
+        wait_for_ssh(vm)
         bootstrap_for_node(vm).run
 
         puts "\n"
@@ -413,6 +383,8 @@ class Chef
         puts "#{ui.color("Run List", :cyan)}: #{config[:run_list].join(', ')}"
         puts "#{ui.color("Done!", :green)}"
       end
+
+
 
       def bootstrap_for_node(vm)
         bootstrap = Chef::Knife::Bootstrap.new
